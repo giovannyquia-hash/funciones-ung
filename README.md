@@ -11,12 +11,23 @@ Página de práctica de Matemáticas Básicas con 28 competencias sobre:
 
 Abre `index.html` en cualquier navegador. No requiere instalación ni servidor.
 
-## Publicar en GitHub Pages
+## Publicación
 
-1. Crea un repositorio, por ejemplo `funciones-ung`.
-2. Sube el contenido de esta carpeta (`index.html` en la raíz del repositorio).
-3. En GitHub ve a **Settings → Pages**, elige la rama `main` y la carpeta `/ (root)`.
-4. La página quedará disponible en `https://TU-USUARIO.github.io/funciones-ung/`.
+Página publicada en GitHub Pages:
+
+**https://giovannyquia-hash.github.io/funciones-ung/**
+
+Repositorio: `https://github.com/giovannyquia-hash/funciones-ung`
+
+### Actualizar la página
+
+```bash
+git add -A
+git commit -m "Actualización de contenido"
+git push
+```
+
+GitHub Pages redespliega automáticamente en 1-2 minutos.
 
 ## Funcionalidades
 
