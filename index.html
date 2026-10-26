@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matemáticas Básicas · Funciones | Universidad Nueva Granada</title>
+<style>
+  :root{
+    --ink:#1c2340;
+    --accent:#3a64ff;
+    --accent-soft:#eef3ff;
+    --line:#e4e8f2;
+    --muted:#6b7280;
+    --panel:#ffffff;
+    --uni:#7a44ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:#f6f8fc;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 20px}
+
+  /* ---------------- Header ---------------- */
+  .topbar{background:var(--panel);border-bottom:1px solid var(--line)}
+  .topbar .wrap{height:64px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:-.5px}
+  .brand .cube{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#3a64ff,#7a44ff);color:#fff;display:grid;place-items:center;font-size:19px;font-weight:900}
+  .brand small{display:block;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:0}
+  .prof{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)}
+  .prof .dot{width:8px;height:8px;border-radius:50%;background:#22c55e}
+  .btn{padding:9px 16px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;border:2px solid var(--line);background:#fff;color:var(--ink)}
+  .btn:hover{border-color:var(--accent)}
+  .btn.solid{border-color:var(--accent);background:var(--accent);color:#fff}
+
+  /* ---------------- Hero ---------------- */
+  .hero{background:var(--panel);border-bottom:1px solid var(--line)}
+  .hero .wrap{padding:34px 20px 28px}
+  .crumbs{font-size:13px;color:var(--muted);margin-bottom:10px}
+  .crumbs b{color:var(--uni)}
+  h1{font-size:34px;letter-spacing:-1px;margin-bottom:8px;line-height:1.15}
+  .intro{max-width:840px;color:#3a4363;font-size:15px}
+  .intro p+p{margin-top:8px}
+  .docente{display:inline-flex;align-items:center;gap:10px;margin-top:16px;background:var(--accent-soft);border:1px solid #d6e2ff;border-radius:999px;padding:9px 16px;font-size:14px;font-weight:700;color:var(--accent)}
+  .docente .avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800}
+
+  /* ---------------- Search ---------------- */
+  .searchbox{margin:26px 0 6px}
+  .searchbox input{
+    width:100%;padding:13px 16px;border:1px solid var(--line);border-radius:10px;font-size:15px;
+    background:var(--panel);font-family:inherit;outline:none;transition:border .15s, box-shadow .15s;
+  }
+  .searchbox input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(58,100,255,.12)}
+  .resultcount{font-size:13px;color:var(--muted);margin:8px 2px 0}
+
+  /* ---------------- Skills ---------------- */
+  .scorebar{display:flex;gap:10px;align-items:center;margin-top:14px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+  .scorepill{background:#ecfdf3;color:#15803d;border:1px solid #bbf7d0;border-radius:999px;padding:4px 12px;font-weight:800}
+  .skills{gap:18px;display:flex;flex-direction:column;margin:18px 0 60px}
+  .cat{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:visible;box-shadow:0 1px 2px rgba(16,24,64,.04)}
+  .cat-head{display:flex;align-items:center;gap:14px;padding:16px 20px;border-left:6px solid var(--cc);border-radius:14px 14px 0 0}
+  .cat-letter{width:38px;height:38px;border-radius:50%;background:var(--cc);color:#fff;display:grid;place-items:center;font-weight:900;font-size:18px;flex:0 0 auto}
+  .cat-head h2{font-size:19px;letter-spacing:-.3px}
+  .cat-head .count{font-size:12px;color:var(--muted);font-weight:600}
+  .cat-skills{list-style:none}
+  .skill{
+    position:relative;display:flex;align-items:center;gap:14px;padding:11px 20px;
+    border-top:1px solid var(--line);cursor:pointer;transition:background .12s;
+  }
+  .skill:hover{background:#f7f9ff}
+  .skill.sel{background:var(--accent-soft)}
+  .skill-code{flex:0 0 52px;font-size:12px;font-weight:800;color:var(--cc);letter-spacing:.4px}
+  .skill-name{flex:1;font-size:15px;color:var(--ink)}
+  .hint{font-size:12px;font-weight:700;color:var(--accent);opacity:0;transition:opacity .12s;white-space:nowrap}
+  .skill:hover .hint{opacity:1}
+
+  /* Popover pregunta de ejemplo */
+  .pop{
+    position:absolute;left:56%;top:-8px;width:320px;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 12px 34px rgba(16,24,64,.16);padding:14px 16px;z-index:30;
+    opacity:0;pointer-events:none;transform:translateY(4px);transition:.16s;
+  }
+  .skill:hover .pop{opacity:1;pointer-events:auto;transform:translateY(0)}
+  .pop .q-label{font-size:11px;font-weight:800;letter-spacing:.6px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+  .pop .q{font-size:14px;color:var(--ink);font-weight:600;margin-bottom:10px}
+  .pop .answers{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .pop .ans{border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px;font-weight:600;color:var(--ink);text-align:center;word-break:break-word}
+  .pop .ans.ok{border-color:#22c55e;background:#ecfdf3;color:#15803d}
+  .pop .caret{position:absolute;left:-6px;top:18px;width:12px;height:12px;background:var(--panel);border-left:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+  .graph-wrap{display:flex;justify-content:center;margin:2px 0 12px}
+  .graph-wrap svg{width:100%;max-width:230px;height:auto;background:#fbfcff;border:1px solid var(--line);border-radius:10px;padding:4px}
+  .mini{width:100%;border-collapse:collapse;margin-top:9px;font-size:13px;font-weight:600;background:#fff;border-radius:8px;overflow:hidden}
+  .mini th,.mini td{border:1px solid var(--line);padding:6px 5px;text-align:center}
+  .mini thead th,.mini tbody th{background:#f3f6ff;color:#43507a;font-weight:800}
+  .mini thead th:first-child{width:44%}
+
+  @media(max-width:720px){
+    .hint{display:none}
+    .prof{display:none}
+    .docente{font-size:12px;padding:7px 12px}
+    .pop{position:fixed;left:16px;top:auto;bottom:14px;width:calc(100% - 32px);transform:none;max-height:70vh;overflow:auto}
+    .pop .caret{display:none}
+  }
+
+  /* ---------------- Modal ---------------- */
+  .modal{position:fixed;inset:0;background:rgba(16,22,48,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;opacity:0;pointer-events:none;transition:opacity .18s}
+  .modal.open{opacity:1;pointer-events:auto}
+  .modal-card{background:#fff;border-radius:16px;width:100%;max-width:540px;max-height:90vh;overflow:auto;box-shadow:0 24px 60px rgba(0,0,0,.3);transform:translateY(8px);transition:transform .18s}
+  .modal.open .modal-card{transform:translateY(0)}
+  .modal-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line)}
+  .modal-head h3{font-size:19px;flex:1}
+  .modal-x{border:none;background:#eef0f6;width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;line-height:1;color:var(--ink)}
+  .modal-body{padding:22px}
+  .modal-foot{display:flex;gap:10px;justify-content:flex-end;padding:0 22px 20px;flex-wrap:wrap}
+
+  /* Practica */
+  .prac-q{font-size:18px;font-weight:700;margin-bottom:6px}
+  .prac-sub{font-size:14px;color:#4b5675;margin-bottom:16px}
+  .prac-ans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  @media(max-width:520px){.prac-ans{grid-template-columns:1fr}}
+  .prac-ans button{border:2px solid var(--line);background:#fff;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--ink);transition:.12s;word-break:break-word}
+  .prac-ans button:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .prac-ans button.good{border-color:#22c55e;background:#ecfdf3;color:#15803d}
+  .prac-ans button.bad{border-color:#ef4444;background:#fef2f2;color:#b91c1c}
+  .prac-ans button:disabled{cursor:default}
+  .prac-fb{font-weight:700;margin-bottom:14px;min-height:20px}
+  .prac-fb.good{color:#15803d}
+  .prac-fb.bad{color:#b91c1c}
+
+  /* Toast */
+  .toast-wrap{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:200;align-items:center;pointer-events:none}
+  .toast{background:#141a33;color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.28);opacity:0;transform:translateY(10px);transition:.2s}
+  .toast.show{opacity:1;transform:translateY(0)}
+
+  /* ---------------- Footer ---------------- */
+  footer{background:#141a33;color:#b9c2da;font-size:13px;margin-top:20px}
+  footer .wrap{padding:34px 20px;text-align:center}
+  footer .name{color:#fff;font-weight:700}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand"><div class="cube">M</div>
+      <div>Matemáticas Básicas<small>Universidad Nueva Granada</small></div>
+    </div>
+    <div class="prof"><span class="dot"></span>Prof. F. Giovanny Quiazúa M.</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="crumbs"><b>Universidad Nueva Granada</b> › Matemáticas Básicas › Funciones</div>
+    <h1>Matemáticas Básicas · Funciones</h1>
+    <div class="intro">
+      <p>Lista de competencias de <b>Funciones</b>: evaluación de funciones (lineales, cuadráticas, con tablas y con notación de función), escritura de funciones a partir de ecuaciones, problemas verbales de notación de funciones, y <b>dominio y rango</b> a partir de gráficas. Sitúa el cursor sobre una competencia para ver una pregunta de ejemplo y haz clic para practicar; la plataforma guarda tus aciertos.</p>
+    </div>
+    <div class="docente"><span class="avatar">FG</span>Docente: F. Giovanny Quiazúa M.</div>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="searchbox">
+    <input id="search" type="search" placeholder="Buscar una competencia (ej. evaluar, notación, dominio, rango, gráfica…)">
+  </div>
+  <div class="resultcount" id="rc"></div>
+  <div class="scorebar">
+    <span>Tu puntuación:</span>
+    <span class="scorepill" id="scorePill">0 / 0</span>
+    <button class="btn" type="button" id="resetScore" style="padding:5px 12px">Reiniciar</button>
+  </div>
+  <div class="skills" id="skills"></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Universidad Nueva Granada · Curso de Matemáticas Básicas · Funciones</div>
+    <div class="name">Prof. F. Giovanny Quiazúa M.</div>
+    <div style="margin-top:6px">© 2026 · Ejercicios de práctica. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="modalTitle">Título</h3>
+      <button class="modal-x" type="button" id="modalX" aria-label="Cerrar">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toasts"></div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   Datos: categorías, competencias, preguntas y gráficas
+   ============================================================ */
+const CATS = [
+ {
+  "letter": "A",
+  "color": "#1f9d61",
+  "title": "Evalúa funciones",
+  "skills": [
+   {
+    "c": "A.1",
+    "t": "Evaluar una función lineal",
+    "q": "Si f(x) = 3x − 2, ¿cuál es el valor de f(4)?",
+    "a": ["14", "10", "12", "5"],
+    "ok": 1
+   },
+   {
+    "c": "A.2",
+    "t": "Evaluar una función cuadrática",
+    "q": "Si f(x) = x<sup>2</sup> − 3x, ¿cuál es el valor de f(−2)?",
+    "a": ["−2", "2", "10", "−10"],
+    "ok": 2
+   },
+   {
+    "c": "A.3",
+    "t": "Evaluar con un valor fraccionario",
+    "q": "Si f(x) = 6x + 1, ¿cuál es el valor de f(1/3)?",
+    "a": ["3", "2", "7/3", "1/3"],
+    "ok": 0
+   },
+   {
+    "c": "A.4",
+    "t": "Evaluar a partir de una tabla",
+    "q": "La tabla muestra algunos valores de la función f. ¿Cuánto vale f(3)?<table class=\"mini\"><thead><tr><th>x</th><th>1</th><th>2</th><th>3</th><th>4</th></tr></thead><tbody><tr><th>f(x)</th><td>5</td><td>8</td><td>11</td><td>14</td></tr></tbody></table>",
+    "a": ["3", "8", "11", "14"],
+    "ok": 2
+   },
+   {
+    "c": "A.5",
+    "t": "Evaluar una regla dada en palabras",
+    "q": "La función g asigna a cada número su triple menos 5. ¿Cuál es el valor de g(4)?",
+    "a": ["17", "12", "−1", "7"],
+    "ok": 3
+   },
+   {
+    "c": "A.6",
+    "t": "Hallar la entrada que produce una salida",
+    "q": "Si f(x) = 5x − 3, ¿qué valor de x hace que f(x) = 17?",
+    "a": ["20", "4", "3.4", "14"],
+    "ok": 1
+   }
+  ]
+ },
+ {
+  "letter": "B",
+  "color": "#3a64ff",
+  "title": "Escribir funciones a partir de ecuaciones",
+  "skills": [
+   {
+    "c": "B.1",
+    "t": "Pasar de y = … a f(x)",
+    "q": "La ecuación y = 7x − 2 escrita en notación de función es:",
+    "a": ["f(x) = 7x − 2", "f(x) = 7x + 2", "f(x) = −7x − 2", "f(x) = x − 2"],
+    "ok": 0
+   },
+   {
+    "c": "B.2",
+    "t": "Despejar y para escribir la función",
+    "q": "La ecuación 2x + y = 9 escrita en notación de función es:",
+    "a": ["f(x) = 2x + 9", "f(x) = −2x + 9", "f(x) = −2x − 9", "f(x) = 9x + 2"],
+    "ok": 1
+   },
+   {
+    "c": "B.3",
+    "t": "Escribir la función desde una tabla",
+    "q": "La tabla muestra una función lineal. ¿Cuál ecuación la representa?<table class=\"mini\"><thead><tr><th>x</th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead><tbody><tr><th>f(x)</th><td>5</td><td>9</td><td>13</td><td>17</td></tr></tbody></table>",
+    "a": ["f(x) = 5x + 4", "f(x) = 4x + 5", "f(x) = 4x − 5", "f(x) = x + 5"],
+    "ok": 1
+   },
+   {
+    "c": "B.4",
+    "t": "Escribir la función desde una gráfica",
+    "q": "La gráfica muestra una función lineal. ¿Cuál ecuación la representa?",
+    "graph": {
+      "shapes": [
+        {"type": "line", "m": 2, "b": 2}
+      ]
+    },
+    "a": ["f(x) = 2x + 2", "f(x) = 2x − 2", "f(x) = x + 2", "f(x) = 4x + 2"],
+    "ok": 0
+   },
+   {
+    "c": "B.5",
+    "t": "Escribir una función de proporcionalidad",
+    "q": "El precio p de n cuadernos está dado por p = 3500n. ¿Cuál es la función que representa la situación?",
+    "a": ["f(n) = 3500 + n", "f(n) = 3500n", "f(n) = n / 3500", "f(n) = 3500 − n"],
+    "ok": 1
+   },
+   {
+    "c": "B.6",
+    "t": "Despejar y con coeficiente distinto de 1",
+    "q": "Al escribir 2y = 6x − 8 en notación de función se obtiene:",
+    "a": ["f(x) = 3x − 8", "f(x) = 3x − 4", "f(x) = 6x − 4", "f(x) = 3x + 4"],
+    "ok": 1
+   },
+   {
+    "c": "B.7",
+    "t": "Escribir una función a partir de dos valores",
+    "q": "Una función lineal cumple f(0) = −1 y f(2) = 5. ¿Cuál es su ecuación?",
+    "a": ["f(x) = 3x − 1", "f(x) = 2x − 1", "f(x) = 3x + 1", "f(x) = 4x − 1"],
+    "ok": 0
+   }
+  ]
+ },
+ {
+  "letter": "C",
+  "color": "#b747d8",
+  "title": "Problemas verbales de notación de funciones",
+  "skills": [
+   {
+    "c": "C.1",
+    "t": "Interpretar el valor de una función",
+    "q": "La función C(t) = 15t + 20 da el costo, en miles de pesos, de un servicio de t horas. ¿Qué significa C(3) = 65?",
+    "a": ["Un servicio de 3 horas cuesta 65 mil pesos", "Cada hora cuesta 65 mil pesos", "La tarifa base es de 65 mil pesos", "Con 65 mil pesos se trabajan 15 horas"],
+    "ok": 0
+   },
+   {
+    "c": "C.2",
+    "t": "Evaluar una función en contexto",
+    "q": "Con la función C(t) = 15t + 20, ¿cuál es el costo de un servicio de 4 horas?",
+    "a": ["60 mil pesos", "80 mil pesos", "95 mil pesos", "20 mil pesos"],
+    "ok": 1
+   },
+   {
+    "c": "C.3",
+    "t": "Hallar la entrada en un contexto",
+    "q": "La altura de un globo está dada por h(t) = −5t + 60, en metros, después de t minutos. ¿En qué minuto el globo está a 20 m de altura?",
+    "a": ["8", "10", "16", "12"],
+    "ok": 0
+   },
+   {
+    "c": "C.4",
+    "t": "Comparar dos funciones en un valor",
+    "q": "Para f(x) = 3x + 1 y g(x) = 2x + 4, ¿cuál función tiene mayor valor cuando x = 2?",
+    "a": ["f(2) es mayor", "g(2) es mayor", "Son iguales", "No se puede determinar"],
+    "ok": 1
+   },
+   {
+    "c": "C.5",
+    "t": "Interpretar la tasa de cambio",
+    "q": "La función P(t) = 1200 + 80t modela la población de una colonia de bacterias. ¿Qué representa el número 80?",
+    "a": ["La población inicial", "El aumento por cada unidad de t", "La población después de t horas", "El doble de la población inicial"],
+    "ok": 1
+   },
+   {
+    "c": "C.6",
+    "t": "Interpretar una igualdad en contexto",
+    "q": "Un carro se desplaza según d(t) = 60t, donde d está en kilómetros y t en horas. ¿Qué significa d(2) = 120?",
+    "a": ["El carro recorre 120 km en 2 horas", "El carro tarda 120 horas en recorrer 2 km", "El carro recorre 2 km en 120 horas", "La velocidad del carro es 120 km/h"],
+    "ok": 0
+   },
+   {
+    "c": "C.7",
+    "t": "Escribir la función de una situación",
+    "q": "Una membresía cuesta 50 mil pesos de inscripción y 20 mil pesos por mes. ¿Cuál función da el costo total M(m) después de m meses?",
+    "a": ["M(m) = 20 + 50m", "M(m) = 50 + 20m", "M(m) = 70m", "M(m) = 50m − 20"],
+    "ok": 1
+   }
+  ]
+ },
+ {
+  "letter": "D",
+  "color": "#e07b18",
+  "title": "Dominio y rango a partir de gráficas",
+  "skills": [
+   {
+    "c": "D.1",
+    "t": "Dominio de un segmento",
+    "q": "¿Cuál es el dominio de la función que se muestra en la gráfica?",
+    "graph": {
+      "shapes": [
+        {"type": "segment", "from": [-3, 1], "to": [2, 4]}
+      ]
+    },
+    "a": ["[−3, 2]", "(−3, 2)", "[1, 4]", "[−3, 4]"],
+    "ok": 0
+   },
+   {
+    "c": "D.2",
+    "t": "Rango de un segmento",
+    "q": "¿Cuál es el rango de la función que se muestra en la gráfica?",
+    "graph": {
+      "shapes": [
+        {"type": "segment", "from": [-4, -1], "to": [3, 3]}
+      ]
+    },
+    "a": ["[−4, 3]", "[−1, 3]", "(−1, 3)", "[1, 3]"],
+    "ok": 1
+   },
+   {
+    "c": "D.3",
+    "t": "Dominio de puntos aislados",
+    "q": "La gráfica está formada por puntos aislados. ¿Cuál es su dominio?",
+    "graph": {
+      "shapes": [
+        {"type": "points", "pts": [[-2, 1], [0, 3], [1, -1], [3, 2]]}
+      ]
+    },
+    "a": ["{−2, 0, 1, 3}", "{−2, 0, 3}", "{−1, 1, 2, 3}", "[−2, 3]"],
+    "ok": 0
+   },
+   {
+    "c": "D.4",
+    "t": "Rango de puntos aislados",
+    "q": "La gráfica está formada por puntos aislados. ¿Cuál es su rango?",
+    "graph": {
+      "shapes": [
+        {"type": "points", "pts": [[-2, 1], [0, 3], [1, -1], [3, 2]]}
+      ]
+    },
+    "a": ["{1, 2, 3}", "{−1, 1, 2, 3}", "[−1, 3]", "{−2, 0, 1, 3}"],
+    "ok": 1
+   },
+   {
+    "c": "D.5",
+    "t": "Dominio de un rayo",
+    "q": "¿Cuál es el dominio de la función que se muestra en la gráfica?",
+    "graph": {
+      "shapes": [
+        {"type": "ray", "from": [1, 0], "to": [5, 4]}
+      ]
+    },
+    "a": ["(1, ∞)", "[1, ∞)", "(−∞, 1)", "(0, ∞)"],
+    "ok": 0
+   },
+   {
+    "c": "D.6",
+    "t": "Rango de una parábola",
+    "q": "¿Cuál es el rango de la función que se muestra en la gráfica?",
+    "graph": {
+      "shapes": [
+        {"type": "fn", "f": "quad", "a": 1, "h": 1, "k": -3, "x1": -3.2, "x2": 5.2}
+      ]
+    },
+    "a": ["[−3, ∞)", "(−∞, −3]", "[1, ∞)", "(−∞, ∞)"],
+    "ok": 0
+   },
+   {
+    "c": "D.7",
+    "t": "Dominio con extremo abierto",
+    "q": "¿Cuál es el dominio de la función que se muestra en la gráfica?",
+    "graph": {
+      "shapes": [
+        {"type": "segment", "from": [-2, 4], "to": [3, -2], "openFrom": true}
+      ]
+    },
+    "a": ["[−2, 3]", "(−2, 3]", "[−2, 3)", "(−2, 3)"],
+    "ok": 1
+   },
+   {
+    "c": "D.8",
+    "t": "Dominio de una parábola",
+    "q": "¿Cuál es el dominio de la función que se muestra en la gráfica?",
+    "graph": {
+      "shapes": [
+        {"type": "fn", "f": "quad", "a": 1, "h": 0, "k": -4, "x1": -4.5, "x2": 4.5}
+      ]
+    },
+    "a": ["[−4, ∞)", "(−∞, ∞)", "[0, ∞)", "(−∞, −4]"],
+    "ok": 1
+   }
+  ]
+ }
+];
+
+/* ============================================================
+   Dibujo de gráficas (SVG)
+   ============================================================ */
+let graphSeq = 0;
+function graphSVG(g, color){
+  const W = 220, H = 220, pad = 24;
+  const minX = g.xmin !== undefined ? g.xmin : -5;
+  const maxX = g.xmax !== undefined ? g.xmax : 5;
+  const minY = g.ymin !== undefined ? g.ymin : -5;
+  const maxY = g.ymax !== undefined ? g.ymax : 5;
+  const sx = (W - 2 * pad) / (maxX - minX);
+  const sy = (H - 2 * pad) / (maxY - minY);
+  const X = x => pad + (x - minX) * sx;
+  const Y = y => H - pad - (y - minY) * sy;
+  const clip = "clip" + (++graphSeq);
+  const c = color || "#3a64ff";
+  const parts = [];
+
+  parts.push('<defs>');
+  parts.push('<clipPath id="' + clip + '"><rect x="' + pad + '" y="' + pad + '" width="' + (W - 2 * pad) + '" height="' + (H - 2 * pad) + '"/></clipPath>');
+  parts.push('<marker id="arrow' + clip + '" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="' + c + '"/></marker>');
+  parts.push('</defs>');
+
+  // cuadrícula
+  for (let x = Math.ceil(minX); x <= maxX; x++){
+    if (x === 0) continue;
+    parts.push('<line x1="' + X(x) + '" y1="' + Y(minY) + '" x2="' + X(x) + '" y2="' + Y(maxY) + '" stroke="#edf0f9" stroke-width="1"/>');
+  }
+  for (let y = Math.ceil(minY); y <= maxY; y++){
+    if (y === 0) continue;
+    parts.push('<line x1="' + X(minX) + '" y1="' + Y(y) + '" x2="' + X(maxX) + '" y2="' + Y(y) + '" stroke="#edf0f9" stroke-width="1"/>');
+  }
+
+  // ejes
+  if (minX <= 0 && maxX >= 0){
+    parts.push('<line x1="' + X(0) + '" y1="' + Y(minY) + '" x2="' + X(0) + '" y2="' + Y(maxY) + '" stroke="#8b94b2" stroke-width="1.3"/>');
+  }
+  if (minY <= 0 && maxY >= 0){
+    parts.push('<line x1="' + X(minX) + '" y1="' + Y(0) + '" x2="' + X(maxX) + '" y2="' + Y(0) + '" stroke="#8b94b2" stroke-width="1.3"/>');
+  }
+  // números de los ejes
+  if (minY <= 0 && maxY >= 0){
+    for (let x = Math.ceil(minX); x <= maxX; x++){
+      if (x === 0) continue;
+      parts.push('<text x="' + X(x) + '" y="' + (Y(0) + 13) + '" font-size="9.5" fill="#7b849f" text-anchor="middle" font-family="Arial, sans-serif">' + x + '</text>');
+    }
+  }
+  if (minX <= 0 && maxX >= 0){
+    for (let y = Math.ceil(minY); y <= maxY; y++){
+      if (y === 0) continue;
+      parts.push('<text x="' + (X(0) - 7) + '" y="' + (Y(y) + 3.4) + '" font-size="9.5" fill="#7b849f" text-anchor="end" font-family="Arial, sans-serif">' + y + '</text>');
+    }
+  }
+  if (minX <= 0 && maxX >= 0 && minY <= 0 && maxY >= 0){
+    parts.push('<text x="' + (X(0) - 7) + '" y="' + (Y(0) + 13) + '" font-size="9.5" fill="#7b849f" text-anchor="end" font-family="Arial, sans-serif">0</text>');
+  }
+  // etiquetas de ejes
+  parts.push('<text x="' + (X(maxX) - 2) + '" y="' + (Y(0) - 7) + '" font-size="12" font-style="italic" fill="#6b7280" text-anchor="end" font-family="Georgia, serif">x</text>');
+  parts.push('<text x="' + (X(0) + 8) + '" y="' + (Y(maxY) + 12) + '" font-size="12" font-style="italic" fill="#6b7280" font-family="Georgia, serif">y</text>');
+
+  function dot(x, y, open){
+    if (x < minX || x > maxX || y < minY || y > maxY) return "";
+    return '<circle cx="' + X(x) + '" cy="' + Y(y) + '" r="4.5" fill="' + (open ? "#ffffff" : c) + '" stroke="' + c + '" stroke-width="2"/>';
+  }
+
+  (g.shapes || []).forEach(s => {
+    if (s.type === "line"){
+      const x1 = minX, y1 = s.m * x1 + s.b;
+      const x2 = maxX, y2 = s.m * x2 + s.b;
+      parts.push('<line x1="' + X(x1) + '" y1="' + Y(y1) + '" x2="' + X(x2) + '" y2="' + Y(y2) + '" stroke="' + c + '" stroke-width="2.6" clip-path="url(#' + clip + ')" stroke-linecap="round"/>');
+    }
+    if (s.type === "segment"){
+      parts.push('<line x1="' + X(s.from[0]) + '" y1="' + Y(s.from[1]) + '" x2="' + X(s.to[0]) + '" y2="' + Y(s.to[1]) + '" stroke="' + c + '" stroke-width="2.6" clip-path="url(#' + clip + ')" stroke-linecap="round"/>');
+      parts.push(dot(s.from[0], s.from[1], !!s.openFrom));
+      parts.push(dot(s.to[0], s.to[1], !!s.openTo));
+    }
+    if (s.type === "ray"){
+      parts.push('<line x1="' + X(s.from[0]) + '" y1="' + Y(s.from[1]) + '" x2="' + X(s.to[0]) + '" y2="' + Y(s.to[1]) + '" stroke="' + c + '" stroke-width="2.6" clip-path="url(#' + clip + ')" stroke-linecap="round" marker-end="url(#arrow' + clip + ')"/>');
+      parts.push(dot(s.from[0], s.from[1], s.openFrom === undefined ? true : !!s.openFrom));
+    }
+    if (s.type === "points"){
+      s.pts.forEach(p => { parts.push(dot(p[0], p[1], false)); });
+    }
+    if (s.type === "fn"){
+      const pts = [];
+      const n = 120;
+      for (let i = 0; i <= n; i++){
+        const x = s.x1 + (s.x2 - s.x1) * i / n;
+        let y;
+        if (s.f === "quad"){
+          y = s.a * (x - s.h) * (x - s.h) + s.k;
+        } else {
+          y = 0;
+        }
+        pts.push([x, y]);
+      }
+      const d = pts.map((p, i) => (i ? "L" : "M") + X(p[0]) + " " + Y(p[1])).join(" ");
+      parts.push('<path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="2.6" clip-path="url(#' + clip + ')" stroke-linecap="round"/>');
+      // vértice
+      if (s.f === "quad"){
+        parts.push(dot(s.h, s.k, false));
+      }
+    }
+  });
+
+  return '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Gráfica de la función en el plano cartesiano">' + parts.join("") + "</svg>";
+}
+
+/* ============================================================
+   Render de la lista
+   ============================================================ */
+const skillsEl = document.getElementById("skills");
+const searchEl = document.getElementById("search");
+const rcEl = document.getElementById("rc");
+
+CATS.forEach(cat => {
+  const section = document.createElement("section");
+  section.className = "cat";
+  section.dataset.letter = cat.letter;
+  section.style.setProperty("--cc", cat.color);
+  section.dataset.title = cat.title.toLowerCase();
+
+  const head = document.createElement("div");
+  head.className = "cat-head";
+  head.innerHTML = '<div class="cat-letter">' + cat.letter + "</div>" +
+    "<h2>" + cat.title + "</h2>" +
+    '<span class="count">' + cat.skills.length + " competencias</span>";
+  section.appendChild(head);
+
+  const ul = document.createElement("ul");
+  ul.className = "cat-skills";
+
+  cat.skills.forEach(s => {
+    const li = document.createElement("li");
+    li.className = "skill";
+    li.dataset.search = (cat.letter + " " + s.c + " " + s.t + " " + cat.title).toLowerCase();
+    const graphHTML = s.graph ? '<div class="graph-wrap">' + graphSVG(s.graph, cat.color) + "</div>" : "";
+    li.innerHTML =
+      '<div class="skill-code">' + s.c + "</div>" +
+      '<a class="skill-name" href="#" data-c="' + s.c + '">' + s.t + "</a>" +
+      '<span class="hint">Practicar ›</span>' +
+      '<div class="pop">' +
+        '<div class="q-label">Pregunta de ejemplo · ' + s.c + "</div>" +
+        '<div class="q">' + s.q + "</div>" +
+        graphHTML +
+        '<div class="answers">' + s.a.map((ans, i) =>
+          '<div class="ans' + (i === s.ok ? " ok" : "") + '">' + ans + "</div>").join("") +
+        "</div>" +
+        '<div class="caret"></div>' +
+      "</div>";
+    li.__cat = cat;
+    li.__skill = s;
+    ul.appendChild(li);
+  });
+
+  section.appendChild(ul);
+  skillsEl.appendChild(section);
+});
+
+/* ============================================================
+   Utilidades
+   ============================================================ */
+const modal = document.getElementById("modal");
+const modalTitle = document.getElementById("modalTitle");
+const modalBody = document.getElementById("modalBody");
+const modalFoot = document.getElementById("modalFoot");
+function $$(sel, root){ return Array.from((root || document).querySelectorAll(sel)); }
+function openModal(title, body, foot){
+  modalTitle.textContent = title;
+  modalBody.innerHTML = body;
+  modalFoot.innerHTML = foot || "";
+  modal.classList.add("open");
+}
+function closeModal(){ modal.classList.remove("open"); }
+document.getElementById("modalX").addEventListener("click", closeModal);
+modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+function toast(msg){
+  const wrap = document.getElementById("toasts");
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  wrap.appendChild(t);
+  requestAnimationFrame(() => t.classList.add("show"));
+  setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 250); }, 2600);
+}
+
+/* ============================================================
+   Puntuación
+   ============================================================ */
+let score = {ok: 0, total: 0};
+try {
+  const raw = JSON.parse(localStorage.getItem("ung_funciones_score_v1"));
+  if (raw && typeof raw.ok === "number") score = raw;
+} catch(e){}
+function saveScore(){ try { localStorage.setItem("ung_funciones_score_v1", JSON.stringify(score)); } catch(e){} }
+function paintScore(){
+  document.getElementById("scorePill").textContent = score.ok + " / " + score.total;
+}
+document.getElementById("resetScore").addEventListener("click", () => {
+  score = {ok: 0, total: 0}; saveScore(); paintScore(); toast("Puntuación reiniciada");
+});
+paintScore();
+
+/* ============================================================
+   Práctica
+   ============================================================ */
+function openPractice(cat, s){
+  const order = s.a.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = order[i]; order[i] = order[j]; order[j] = tmp;
+  }
+  const correctPos = order.indexOf(s.ok);
+  const answers = order.map((orig, pos) =>
+    '<button type="button" data-i="' + pos + '">' + s.a[orig] + "</button>").join("");
+  const graphHTML = s.graph ? '<div class="graph-wrap">' + graphSVG(s.graph, cat.color) + "</div>" : "";
+  openModal(
+    s.c + " · " + cat.title,
+    '<div class="prac-q">' + s.t + "</div>" +
+    '<div class="prac-sub">' + s.q + "</div>" +
+    graphHTML +
+    '<div class="prac-ans" id="pracAns">' + answers + "</div>" +
+    '<div class="prac-fb" id="pracFb"></div>',
+    '<button class="btn" type="button" id="pracClose">Cerrar</button>' +
+    '<button class="btn solid" type="button" id="pracNext">Siguiente competencia</button>'
+  );
+  document.getElementById("pracClose").addEventListener("click", closeModal);
+  document.getElementById("pracNext").addEventListener("click", () => nextSkill(cat, s));
+  const fb = document.getElementById("pracFb");
+  $$("#pracAns button").forEach(btn => btn.addEventListener("click", () => {
+    const right = Number(btn.dataset.i) === correctPos;
+    score.total++; if (right) score.ok++; saveScore(); paintScore();
+    $$("#pracAns button").forEach((b, i) => {
+      b.disabled = true;
+      if (i === correctPos) b.classList.add("good");
+    });
+    if (!right) btn.classList.add("bad");
+    fb.className = "prac-fb " + (right ? "good" : "bad");
+    fb.textContent = right ? "¡Correcto!" : "Incorrecto. La respuesta correcta está en verde.";
+  }));
+}
+function nextSkill(cat, s){
+  const next = cat.skills[(cat.skills.indexOf(s) + 1) % cat.skills.length];
+  openPractice(cat, next);
+}
+
+skillsEl.addEventListener("click", e => {
+  const li = e.target.closest(".skill");
+  if (!li) return;
+  e.preventDefault();
+  $$(".skill.sel").forEach(x => x !== li && x.classList.remove("sel"));
+  li.classList.add("sel");
+  openPractice(li.__cat, li.__skill);
+});
+
+/* ============================================================
+   Búsqueda
+   ============================================================ */
+function renderCount() {
+  const q = searchEl.value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll(".cat").forEach(sec => {
+    let vis = 0;
+    sec.querySelectorAll(".skill").forEach(s => {
+      const ok = !q || s.dataset.search.includes(q) ||
+        sec.dataset.title.includes(q) ||
+        sec.dataset.letter.toLowerCase() === q;
+      s.style.display = ok ? "" : "none";
+      if (ok) vis++;
+    });
+    sec.style.display = vis ? "" : "none";
+    shown += vis;
+  });
+  rcEl.textContent = shown + " competencias" + (q ? ' con "' + searchEl.value.trim() + '"' : "") + " en 4 categorías";
+}
+searchEl.addEventListener("input", renderCount);
+renderCount();
+</script>
+</body>
+</html>
